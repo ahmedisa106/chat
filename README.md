@@ -36,8 +36,8 @@ php artisan key:generate
 
 ```
 DB_DATABASE=your_database_name
-DB_USERNAME=usernmae
-DB_PASSWORD=passwod
+DB_USERNAME=username
+DB_PASSWORD=password
 ```
 
 ```
