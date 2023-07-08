@@ -1,0 +1,19 @@
+{
+    "private": true,
+    "type": "commonjs",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "run-dev": "node server.js"
+    },
+    "devDependencies": {
+        "axios": "^1.1.2",
+        "laravel-vite-plugin": "^0.7.5",
+        "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "nodemon": "^2.0.22",
+        "socket.io": "^4.7.1"
+    }
+}
