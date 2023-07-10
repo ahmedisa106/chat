@@ -58,5 +58,5 @@ nodemon server.js
 
 ```
 email: admin@admin.com
-password: 123456
+password: admin
 ```
