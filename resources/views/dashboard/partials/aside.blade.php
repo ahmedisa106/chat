@@ -20,7 +20,7 @@
                         <span>Admins</span>
                     </div>
                 </a>
-                <a href="{{url('/dashboard/admins')}}" aria-expanded="false" class="dropdown-toggle">
+                <a href="{{url('/dashboard/chat')}}" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <i class="fa fa-envelope " ></i>
                         <span>Chat</span>

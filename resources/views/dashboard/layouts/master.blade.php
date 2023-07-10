@@ -27,13 +27,13 @@
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
 
-            <div class="row layout-top-spacing">
+            {{--            <div class="row layout-top-spacing">--}}
 
 
-                @yield('content')
+            @yield('content')
 
 
-            </div>
+            {{--            </div>--}}
             @include('dashboard.partials.footer')
         </div>
         <!--  END CONTENT AREA  -->
@@ -48,29 +48,39 @@
 
 <script>
     const socket = io('http://localhost:8001', {transports: ['websocket', 'polling', 'flashsocket']});
-
-
     socket.on('connect', function () {
         socket.emit('admin_connected', {
             'id': '{{auth('admin')->user()->id}}',
             'name': '{{auth('admin')->user()->name}}',
         });
-    })
-    // socket.on('admin_is_online', function (data) {
-    //     alertSuccess(data.name + ' Is Online Now');
-    // })
 
-    socket.on('update_admin_status', function (admins) {
-        $('.admin-status').removeClass('text-success');
-        $.each(admins, function (id, value) {
-            if (value != null && value !== 0) {
-                $('.admin-status-' + id).addClass('text-success');
-            }
+        socket.on('update_admin_status', function (admins) {
+            $('.admin-status').removeClass('text-success');
+            $.each(admins, function (id, value) {
+                if (value != null && value !== 0) {
+                    $('.admin-status-' + id).addClass('text-success');
+                }
+
+            })
+        });
+
+        // socket.on('admin_is_online', function (data) {
+        //     alertSuccess(data.name + ' Is Online Now');
+        // })
+
+        socket.on('send_message', function (data) {
+
+            $('.conversation-start').append('<div class="bubble you">' + data.message + '</div>');
+            const getScrollContainer = document.querySelector('.chat-conversation-box');
+            getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
 
         })
+
     })
 
+
 </script>
+
 </body>
 
 </html>

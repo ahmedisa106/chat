@@ -22,5 +22,19 @@ class Admin extends Authenticatable
 
     }
 
+    public function messages()
+    {
+        return $this->belongsToMany(Message::class, 'admin_messages', 'sender_id', 'message_id');
+    }
+
+    public function lastMessageFromMe()
+    {
+        return $this->hasOne(AdminMessage::class, 'sender_id')->latest('id');
+    }
+    public function lastMessage()
+    {
+        return $this->hasOne(AdminMessage::class, 'receiver_id')->latest('id');
+    }
+
 
 }

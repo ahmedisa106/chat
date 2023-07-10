@@ -20,9 +20,15 @@ class AdminTableSeeder extends Seeder
 
         $admin->insert([
             [
-                'name' => 'ahmed',
+                'name' => 'ِAhmed',
                 'email' => 'admin@admin.com',
-                'password' => bcrypt(123456),
+                'password' => bcrypt('admin'),
+                'photo' => null,
+            ],
+            [
+                'name' => 'Mohamed',
+                'email' => 'mohamed@admin.com',
+                'password' => bcrypt('admin'),
                 'photo' => null,
             ],
 

@@ -28,7 +28,7 @@ $('.user-list-box .person').on('click', function(event) {
         $('.chat-box .overlay-phone-call').css('display', 'block');
         $('.chat-box .overlay-video-call').css('display', 'block');
         $(this).addClass('active');
-        $('.chat[data-chat = '+findChat+']').addClass('active-chat');
+        //$('.chat[data-chat = '+findChat+']').addClass('active-chat');
     }
     if ($(this).parents('.user-list-box').hasClass('user-list-box-show')) {
       $(this).parents('.user-list-box').removeClass('user-list-box-show');
@@ -49,18 +49,18 @@ const ps = new PerfectScrollbar('.people', {
   suppressScrollX : true
 });
 
-$('.mail-write-box').on('keydown', function(event) {
-    if(event.key === 'Enter') {
-        var chatInput = $(this);
-        var chatMessageValue = chatInput.val();
-        if (chatMessageValue === '') { return; }
-        $messageHtml = '<div class="bubble me">' + chatMessageValue + '</div>';
-        var appendMessage = $(this).parents('.chat-system').find('.active-chat').append($messageHtml);
-        const getScrollContainer = document.querySelector('.chat-conversation-box');
-        getScrollContainer.scrollTop = getScrollContainer.scrollHeight;
-        var clearChatInput = chatInput.val('');
-    }
-})
+// $('.mail-write-box').on('keydown', function(event) {
+//     if(event.key === 'Enter') {
+//         var chatInput = $(this);
+//         var chatMessageValue = chatInput.val();
+//         if (chatMessageValue === '') { return; }
+//         $messageHtml = '<div class="bubble me">' + chatMessageValue + '</div>';
+//         var appendMessage = $(this).parents('.chat-system').find('.active-chat').append($messageHtml);
+//         const getScrollContainer = document.querySelector('.chat-conversation-box');
+//         getScrollContainer.scrollTop = getScrollContainer.scrollHeight;
+//         var clearChatInput = chatInput.val('');
+//     }
+// })
 
 $('.hamburger, .chat-system .chat-box .chat-not-selected p').on('click', function(event) {
   $(this).parents('.chat-system').find('.user-list-box').toggleClass('user-list-box-show')

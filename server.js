@@ -19,6 +19,11 @@ io.on('connection', function (socket) {
     //     socket.broadcast.emit('admin_is_online', data);
     // })
 
+
+    socket.on('admin_send_message', function (data) {
+        io.to(`${admins[data.receiver_id]}`).emit('send_message', data)
+    })
+
     socket.on('disconnect', function () {
         var i = admins.indexOf(socket.id);
         admins.splice(i, 1, 0);

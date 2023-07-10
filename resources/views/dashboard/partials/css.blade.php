@@ -8,6 +8,8 @@
 <!-- END GLOBAL MANDATORY STYLES -->
 
 <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-<link href="{{asset('assets/dashboard')}}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+{{--<link href="{{asset('assets/dashboard')}}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">--}}
 <link href="{{asset('assets/dashboard')}}/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+
+@stack('css')
