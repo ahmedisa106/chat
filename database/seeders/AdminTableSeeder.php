@@ -14,27 +14,30 @@ class AdminTableSeeder extends Seeder
      */
     public function run(): void
     {
-
-
         $admin = new Admin();
-
         $admin->insert([
             [
-                'name' => 'ِAhmed',
+                'name' => 'Ahmed',
                 'email' => 'admin@admin.com',
                 'password' => bcrypt('admin'),
-                'photo' => null,
+                'photo' => 'admins/me.jpg',
             ],
             [
-                'name' => 'Mohamed',
+                'name' => 'El-Sayed El-Beshry',
                 'email' => 'mohamed@admin.com',
                 'password' => bcrypt('admin'),
-                'photo' => null,
+                'photo' => 'admins/sayed.jpg',
+            ],
+            [
+                'name' => 'Omar Bero',
+                'email' => 'omar@admin.com',
+                'password' => bcrypt('admin'),
+                'photo' => 'admins/pero.jpg',
             ],
 
         ]);
 
-        Admin::factory(9)->create();
+        //   Admin::factory(9)->create();
 
     }
 }

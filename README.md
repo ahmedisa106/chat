@@ -42,12 +42,15 @@ DB_PASSWORD=password
 
 ```
 php artisan migrate --seed
+
+php artisan storage:link
 ```
 
 ### Run this  commands with different terminal
 
 ```
 php artisan serve
+
 nodemon server.js
 ```
 ### go to :

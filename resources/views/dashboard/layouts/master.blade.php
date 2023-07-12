@@ -47,35 +47,53 @@
 
 
 <script>
+    var partner_id = '';
     const socket = io('http://localhost:8001', {transports: ['websocket', 'polling', 'flashsocket']});
-    socket.on('connect', function () {
-        socket.emit('admin_connected', {
-            'id': '{{auth('admin')->user()->id}}',
-            'name': '{{auth('admin')->user()->name}}',
-        });
 
-        socket.on('update_admin_status', function (admins) {
-            $('.admin-status').removeClass('text-success');
-            $.each(admins, function (id, value) {
-                if (value != null && value !== 0) {
-                    $('.admin-status-' + id).addClass('text-success');
+    $(document).ready(function () {
+        socket.on('connect', function () {
+
+            socket.emit('admin_connected', {
+                'id': '{{auth('admin')->user()->id}}',
+                'name': '{{auth('admin')->user()->name}}',
+            });
+
+            socket.on('update_admin_status', function (admins) {
+                $('.admin-status').removeClass('text-success');
+                $.each(admins, function (id, value) {
+                    if (value != null && value !== 0) {
+                        $('.admin-status-' + id).addClass('text-success');
+                    }
+                })
+            });
+
+            // socket.on('admin_is_online', function (data) {
+            //     alertSuccess(data.name + ' Is Online Now');
+            // })
+
+            socket.on('send_message', function (data) {
+
+                if (+data.sender_id !== +partner_id) {
+                    alertSuccess('New Message From ' + data.sender_name);
                 }
+                $('.conversation-start-' + data.sender_id).append('<div class="bubble you">' + data.message + '</div>');
+                const getScrollContainer = document.querySelector('.chat-conversation-box');
+                getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
 
-            })
-        });
+            });
 
-        // socket.on('admin_is_online', function (data) {
-        //     alertSuccess(data.name + ' Is Online Now');
-        // })
+            socket.on('admin_typing', function (data) {
+                $('#' + data).text('typing...');
+                $('#admin_' + data).text('typing...');
 
-        socket.on('send_message', function (data) {
+            });
 
-            $('.conversation-start').append('<div class="bubble you">' + data.message + '</div>');
-            const getScrollContainer = document.querySelector('.chat-conversation-box');
-            getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
+            socket.on('admin_stop_typing', function (data) {
+                $('.admin_status_typing').empty()
+            });
+
 
         })
-
     })
 
 

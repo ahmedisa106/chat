@@ -20,6 +20,17 @@ io.on('connection', function (socket) {
     // })
 
 
+    socket.on('admin_is_typing', function (data) {
+        var partner_id = admins[data.partner_id];
+        io.to(`${admins[data.partner_id]}`).emit('admin_typing', data.admin_id)
+    });
+
+    socket.on('admin_stop_typing', function (data) {
+        var partner_id = admins[data.partner_id];
+        io.to(`${admins[data.partner_id]}`).emit('admin_stop_typing', data.admin_id)
+    })
+
+
     socket.on('admin_send_message', function (data) {
         io.to(`${admins[data.receiver_id]}`).emit('send_message', data)
     })

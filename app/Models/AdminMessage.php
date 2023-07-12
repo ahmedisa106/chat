@@ -15,7 +15,7 @@ class AdminMessage extends Model
 
     public function message()
     {
-         return $this->belongsTo(Message::class,'message_id');
+         return $this->belongsTo(Message::class,'message_id')->orderBy('created_at','asc');
     }
 
 

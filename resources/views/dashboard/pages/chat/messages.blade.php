@@ -1,6 +1,6 @@
 <div class="chat active-chat" data-chat="person6" data-partner_id="{{@$partner->id}}">
     <input type="hidden" id="partner_id" value="{{$partner->id}}">
-    <div class="conversation-start">
+    <div class="conversation-start-{{$partner->id}} conversation-start">
 {{--        <span>Monday, 1:27 PM</span>--}}
 
         @foreach($messages as $message)

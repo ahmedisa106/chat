@@ -16,6 +16,8 @@ class Admin extends Authenticatable
 
     protected $hidden = ['password'];
 
+    protected $appends = ['last_message'];
+
     public function getStatusAttribute($attribute)
     {
         return $attribute == 1 ? AdminStatusEnum::Online : AdminStatusEnum::Offline;
@@ -27,14 +29,20 @@ class Admin extends Authenticatable
         return $this->belongsToMany(Message::class, 'admin_messages', 'sender_id', 'message_id');
     }
 
-    public function lastMessageFromMe()
+    public function receivedMessages()
     {
-        return $this->hasOne(AdminMessage::class, 'sender_id')->latest('id');
+        return $this->belongsToMany(Message::class, 'admin_messages', 'receiver_id', 'message_id');
     }
-    public function lastMessage()
+
+    public function getLastMessageAttribute()
     {
-        return $this->hasOne(AdminMessage::class, 'receiver_id')->latest('id');
+        $messages = $this->messages()->get()->toArray();
+        $received = $this->receivedMessages()->get()->toArray();
+        $messages = array_merge($received, $messages);
+        return $this->attributes['last_message'] = collect($messages)->sortBy('created_at', 4, true)->first()['message'] ?? null;
     }
+
+  
 
 
 }

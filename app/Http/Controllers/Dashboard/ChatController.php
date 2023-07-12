@@ -14,7 +14,10 @@ class ChatController extends Controller
 {
     public function index()
     {
-        $admins = Admin::query()->with(['lastMessage.message:id,message,created_at','lastMessageFromMe.message:id,message,created_at'])->whereNot('id', auth('admin')->id())->get(['id', 'name', 'status']);
+        $admins = Admin::query()->with('messages')
+            ->whereNot('id', auth('admin')->id())
+            ->get(['id', 'name', 'photo']);
+
 
         return view('dashboard.pages.chat.index', compact('admins'));
     }

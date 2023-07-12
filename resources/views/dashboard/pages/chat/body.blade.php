@@ -5,6 +5,9 @@
                 <img src="{{asset('assets/dashboard')}}/assets/img/90x90.jpg" alt="dynamic-image">
                 <span class="name"></span>
             </span>
+            <div>
+                <span class="d-block admin_status_typing admin_status_typing_inside_chat " id="partner_id"></span>
+            </div>
         </div>
 
         <div class="chat-action-btn align-self-center">
@@ -63,6 +66,7 @@
                 </div>
             </div>
         </div>
+
     </div>
     <div class="chat-conversation-box">
         <div id="chat-conversation-box-scroll" class="chat-conversation-box-scroll">

@@ -23,6 +23,7 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (auth('admin')->attempt($credentials)) {
+            \auth('admin')->user()->update(['status' => 1]);
             return response()->json(auth('admin')->user());
         } else {
 
@@ -34,6 +35,7 @@ class AuthController extends Controller
 
     public function logout()
     {
+        \auth('admin')->user()->update(['status' => 0]);
         Auth::guard('admin')->logout();
         return to_route('dashboard.index');
     }

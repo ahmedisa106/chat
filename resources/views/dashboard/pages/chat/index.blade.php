@@ -50,11 +50,10 @@
 
     {{-- get conversations when chose the partner--}}
     <script>
-
-        var partner_id = '';
         $('.person').on('click', function (e) {
             e.preventDefault();
             var admin_id = $(this).data('admin_id');
+            $('.admin_status_typing_inside_chat').attr('id', admin_id)
             partner_id = admin_id;
             $.ajax({
                 type: "get",
@@ -110,7 +109,8 @@
                     socket.emit('admin_send_message', {
                         message,
                         sender_id,
-                        receiver_id
+                        receiver_id,
+                        'sender_name': "{{auth('admin')->user()->name}}"
                     });
                 },
                 error: function (response) {
@@ -122,7 +122,28 @@
     </script>
 
     <script>
+        // when admin  writing
+        var typingTimer;
+        $('.mail-write-box').on('keyup', function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(user_finished, 1000);
 
+            socket.emit('admin_is_typing', {
+                admin_id: '{{auth('admin')->id()}}',
+                partner_id,
+            })
+        })
+        $('.mail-write-box').on('keydown', function () {
+            clearTimeout(typingTimer);
+        });
+
+
+        function user_finished() {
+            socket.emit('admin_stop_typing', {
+                admin_id: '{{auth('admin')->id()}}',
+                partner_id,
+            })
+        }
 
     </script>
 
