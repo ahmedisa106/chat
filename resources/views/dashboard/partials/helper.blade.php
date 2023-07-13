@@ -11,6 +11,19 @@
         var photo = e.target.files[0];
         var url = URL.createObjectURL(photo);
         $(this).parents('.photo').find('.img_preview').attr('src', url)
-    })
+    });
+
+
 </script>
 
+<script>
+    function getSortedAdmins() {
+        $.ajax({
+            url: '{{route('dashboard.admins.getAdmins')}}',
+            type: "get",
+            success: function (response) {
+                $('.people').html(response)
+            }
+        })
+    }
+</script>

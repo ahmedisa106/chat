@@ -7,30 +7,7 @@
         <input type="text" class="form-control" placeholder="Search"/>
     </div>
     <div class="people">
-        @forelse($admins as $admin)
-            <div class="person" data-chat="person6" data-admin_id={{$admin->id}}>
-                <div class="user-info">
-                    <div class="f-head">
-                        <img src="{{getFile($admin->photo)}}" alt="avatar">
-                        <i class="fa fa-circle admin-status admin-status-{{$admin->id}}" style="position: relative; top: -16px"></i>
-                    </div>
-                    <div class="f-body">
-                        <div class="meta-info">
-                            <span class="user-name" data-name="{{$admin->name}}">{{$admin->name}}</span>
-
-                            <span class="user-meta-time">2:09 PM</span>
-                        </div>
-                        {{--                        <span class="preview">--}}
-                        {{--                            {{\Illuminate\Support\Str::limit(@$admin->last_message,10,'...')}}--}}
-                        {{--                        </span>--}}
-                        <span class="text-success admin_status_typing preview" id="admin_{{$admin->id}}"></span>
-                    </div>
-                </div>
-            </div>
-        @empty
-        @endforelse
-
-
+      @include('dashboard.pages.chat.admins_list')
     </div>
 </div>
 @push('js')

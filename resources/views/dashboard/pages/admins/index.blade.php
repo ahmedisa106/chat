@@ -29,6 +29,7 @@
                                         <th class="checkbox-column dt-no-sorting"> Record no.</th>
                                         <th>Name</th>
                                         <th>Email</th>
+                                        <th>Status</th>
                                         <th class="text-center dt-no-sorting">Actions</th>
                                     </tr>
                                     </thead>
@@ -157,6 +158,9 @@
                     },
                     {
                         name: "email", data: 'email'
+                    },
+                    {
+                        name: "status", data: 'status'
                     },
                     {
                         name: "actions", data: 'actions', searchable: false, orderable: false

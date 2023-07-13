@@ -50,11 +50,12 @@
 
     {{-- get conversations when chose the partner--}}
     <script>
-        $('.person').on('click', function (e) {
+        $(document).on('click', '.person', function (e) {
             e.preventDefault();
             var admin_id = $(this).data('admin_id');
             $('.admin_status_typing_inside_chat').attr('id', admin_id)
             partner_id = admin_id;
+            $('#chat-conversation-box-scroll').empty()
             $.ajax({
                 type: "get",
                 url: "{{route('dashboard.chat.getConversation')}}",
@@ -62,7 +63,7 @@
                     admin_id
                 },
                 success: function (response) {
-                    $('#chat-conversation-box-scroll').append(response);
+                    $('#chat-conversation-box-scroll').html(response);
                     const getScrollContainer = document.querySelector('.chat-conversation-box');
                     getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
 
@@ -112,6 +113,8 @@
                         receiver_id,
                         'sender_name': "{{auth('admin')->user()->name}}"
                     });
+
+                    getSortedAdmins()
                 },
                 error: function (response) {
 
@@ -146,5 +149,7 @@
         }
 
     </script>
+
+
 
 @endpush

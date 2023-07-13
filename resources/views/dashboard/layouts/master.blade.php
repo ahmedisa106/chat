@@ -47,6 +47,8 @@
 
 
 <script>
+
+
     var partner_id = '';
     const socket = io('http://localhost:8001', {transports: ['websocket', 'polling', 'flashsocket']});
 
@@ -79,6 +81,8 @@
                 $('.conversation-start-' + data.sender_id).append('<div class="bubble you">' + data.message + '</div>');
                 const getScrollContainer = document.querySelector('.chat-conversation-box');
                 getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
+                getSortedAdmins();
+
 
             });
 
@@ -93,11 +97,19 @@
             });
 
 
-        })
+        });
+
+
+    })
+    $(document).ajaxComplete(function () {
+        socket.emit('admin_connected', {
+            'id': '{{auth('admin')->user()->id}}',
+            'name': '{{auth('admin')->user()->name}}',
+        });
     })
 
-
 </script>
+
 
 </body>
 

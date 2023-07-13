@@ -14,9 +14,25 @@ class ChatController extends Controller
 {
     public function index()
     {
-        $admins = Admin::query()->with('messages')
-            ->whereNot('id', auth('admin')->id())
-            ->get(['id', 'name', 'photo']);
+        $admins = Admin::query()->whereNot('admins.id', auth('admin')->id())
+            ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message')
+            ->leftJoin('admin_messages', function ($q) {
+                $q->on('admins.id', 'admin_messages.sender_id')
+                    ->where(function ($q) {
+                        $q->where('admin_messages.sender_id', auth('admin')->id())
+                            ->orWhere('admin_messages.receiver_id', auth('admin')->id());
+                    })->where('admin_messages.type', 0)
+                    ->orOn('admins.id', 'admin_messages.receiver_id')
+                    ->where(function ($q) {
+                        $q->where('admin_messages.sender_id', auth('admin')->id())
+                            ->orWhere('admin_messages.receiver_id', auth('admin')->id());
+                    })->where('admin_messages.type', 0);
+            })
+            ->leftJoin('messages', 'admin_messages.message_id', 'messages.id')
+            ->orderByDesc('admin_messages.created_at')
+            ->distinct()
+            ->get()
+            ->unique('id');
 
 
         return view('dashboard.pages.chat.index', compact('admins'));
@@ -27,9 +43,16 @@ class ChatController extends Controller
         $partner = Admin::query()->findOrFail($request->admin_id);
 
         $messages = AdminMessage::query()->with('message:id,message')
-            ->where([['sender_id', auth('admin')->id()], ['receiver_id', $partner->id]])
-            ->orWhere([['sender_id', $partner->id], ['receiver_id', auth('admin')->id()]])
-            ->get();
+            ->where('type', 0)
+            ->where(function ($q) use ($partner) {
+                $q->where('sender_id', auth('admin')->id())
+                    ->where('receiver_id', $partner->id)
+                    ->orWhere(function ($q) use ($partner) {
+                        $q->where('sender_id', $partner->id)
+                            ->where('receiver_id', auth('admin')->id());
+                    });
+
+            })->get();
 
         $view = View::make('dashboard.pages.chat.messages', compact('partner', 'messages'))->render();
 

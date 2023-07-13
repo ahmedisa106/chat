@@ -12,9 +12,10 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth:admin'], 'as' => '
     Route::get('/', [HomeController::class, 'index'])->name('index');
 
     Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
-    Route::get('admins/data',[AdminController::class,'data'])->name('admins.data');
-    Route::post('admins',[AdminController::class,'store'])->name('admins.store');
-    Route::post('admins/{admin}',[AdminController::class,'update'])->name('admins.update');
+    Route::get('admins/data', [AdminController::class, 'data'])->name('admins.data');
+    Route::post('admins', [AdminController::class, 'store'])->name('admins.store');
+    Route::post('admins/{admin}', [AdminController::class, 'update'])->name('admins.update');
+    Route::get('admins/get-admins', [AdminController::class, 'getSortedAdmins'])->name('admins.getAdmins');
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
     Route::get('/chat/get-conversation', [ChatController::class, 'getConversation'])->name('chat.getConversation');
     Route::post('chat/send-message', [ChatController::class, 'sendMessage'])->name('chat.sendMessage');
