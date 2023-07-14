@@ -17,12 +17,17 @@
 </script>
 
 <script>
-    function getSortedAdmins() {
+    function getSortedAdmins(in_chat,partner_id) {
         $.ajax({
             url: '{{route('dashboard.admins.getAdmins')}}',
             type: "get",
+            data: {
+                in_chat,
+                partner_id
+            },
             success: function (response) {
-                $('.people').html(response)
+                $('.people').html(response);
+
             }
         })
     }

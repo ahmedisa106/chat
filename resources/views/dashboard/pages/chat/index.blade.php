@@ -52,20 +52,30 @@
     <script>
         $(document).on('click', '.person', function (e) {
             e.preventDefault();
+            $('input[name="message"]').val('')
+            // $(this).css('background-color', '#417c5624').siblings().css('background-color', '')
             var admin_id = $(this).data('admin_id');
             $('.admin_status_typing_inside_chat').attr('id', admin_id)
             partner_id = admin_id;
-            $('#chat-conversation-box-scroll').empty()
+
             $.ajax({
                 type: "get",
                 url: "{{route('dashboard.chat.getConversation')}}",
                 data: {
                     admin_id
                 },
+                beforeSend: function () {
+                    $('#chat-conversation-box-scroll').empty()
+                },
                 success: function (response) {
                     $('#chat-conversation-box-scroll').html(response);
                     const getScrollContainer = document.querySelector('.chat-conversation-box');
                     getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
+                    // $('.user-info .when_un_read_messages').remove();
+                    // $('.user-info .text-success').removeClass('text-success');
+
+                    var in_chat = partner_id == admin_id ? 1 : 0
+                    getSortedAdmins(in_chat, partner_id);
 
                 },
                 error: function () {
@@ -101,6 +111,9 @@
                     receiver_id,
                     message
                 },
+                beforeSend: function () {
+
+                },
                 success: function (response) {
                     $('.conversation-start').append('<div class="bubble me">' + message + '</div>');
                     const getScrollContainer = document.querySelector('.chat-conversation-box');
@@ -113,8 +126,7 @@
                         receiver_id,
                         'sender_name': "{{auth('admin')->user()->name}}"
                     });
-
-                    getSortedAdmins()
+                    getSortedAdmins(1, receiver_id);
                 },
                 error: function (response) {
 
@@ -149,7 +161,5 @@
         }
 
     </script>
-
-
 
 @endpush

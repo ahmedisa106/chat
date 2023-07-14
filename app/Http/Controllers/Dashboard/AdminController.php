@@ -7,6 +7,7 @@ use App\Http\Requests\Dashboard\AdminRequest;
 use App\Models\Admin;
 use App\Traits\upload;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -16,7 +17,6 @@ class AdminController extends Controller
 
     public function index()
     {
-
         return view('dashboard.pages.admins.index');
     }
 
@@ -57,10 +57,12 @@ class AdminController extends Controller
 
     }
 
-    public function getSortedAdmins()
+    public function getSortedAdmins(Request $request)
     {
+        $in_chat = (int)$request->in_chat;
+        $partner_id = (int)$request->partner_id;
         $admins = Admin::query()->whereNot('admins.id', auth('admin')->id())
-            ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message')
+            ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message', 'admin_messages.receiver_id','admin_messages.sender_id')
             ->leftJoin('admin_messages', function ($q) {
                 $q->on('admins.id', 'admin_messages.sender_id')
                     ->where(function ($q) {
@@ -76,10 +78,16 @@ class AdminController extends Controller
             ->leftJoin('messages', 'admin_messages.message_id', 'messages.id')
             ->orderByDesc('admin_messages.created_at')
             ->distinct()
+            ->withCount('UnreadMessages as all_un_read_messages_count')
+            ->withCount(['messages as un_read_messages_count' => function ($q) {
+                $q->where('seen_status', 0)
+                    ->where('receiver_id', auth('admin')->id());
+            }])
             ->get()
             ->unique('id');
 
-        $view = View::make('dashboard.pages.chat.admins_list', compact('admins'))->render();
+
+        $view = View::make('dashboard.pages.chat.admins_list', compact('admins', 'in_chat', 'partner_id'))->render();
         return response()->json($view);
     }
 }

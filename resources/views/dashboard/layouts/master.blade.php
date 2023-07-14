@@ -47,66 +47,70 @@
 
 
 <script>
-
-
     var partner_id = '';
-    const socket = io('http://localhost:8001', {transports: ['websocket', 'polling', 'flashsocket']});
-
-    $(document).ready(function () {
-        socket.on('connect', function () {
-
-            socket.emit('admin_connected', {
-                'id': '{{auth('admin')->user()->id}}',
-                'name': '{{auth('admin')->user()->name}}',
-            });
-
-            socket.on('update_admin_status', function (admins) {
-                $('.admin-status').removeClass('text-success');
-                $.each(admins, function (id, value) {
-                    if (value != null && value !== 0) {
-                        $('.admin-status-' + id).addClass('text-success');
-                    }
-                })
-            });
-
-            // socket.on('admin_is_online', function (data) {
-            //     alertSuccess(data.name + ' Is Online Now');
-            // })
-
-            socket.on('send_message', function (data) {
-
-                if (+data.sender_id !== +partner_id) {
-                    alertSuccess('New Message From ' + data.sender_name);
-                }
-                $('.conversation-start-' + data.sender_id).append('<div class="bubble you">' + data.message + '</div>');
-                const getScrollContainer = document.querySelector('.chat-conversation-box');
-                getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
-                getSortedAdmins();
-
-
-            });
-
-            socket.on('admin_typing', function (data) {
-                $('#' + data).text('typing...');
-                $('#admin_' + data).text('typing...');
-
-            });
-
-            socket.on('admin_stop_typing', function (data) {
-                $('.admin_status_typing').empty()
-            });
-
-
-        });
-
-
-    })
-    $(document).ajaxComplete(function () {
+    const socket = io('http://localhost:5000');
+    socket.on('connect', function () {
         socket.emit('admin_connected', {
             'id': '{{auth('admin')->user()->id}}',
             'name': '{{auth('admin')->user()->name}}',
         });
+
+
+    });
+
+
+    socket.on('update_admin_status', function (admins) {
+        $('.admin-status').removeClass('text-success');
+        $.each(admins, function (id, value) {
+            if (value != null && value !== 0) {
+                $('.admin-status-' + id).addClass('text-success');
+            }
+        })
+    });
+    socket.on('send_message', function (data) {
+        $('.admin_status_typing').empty();
+        var in_chat = 0;
+
+        var sender = +data.sender_id;
+        var partner = +partner_id
+        var receiver = +data.receiver_id
+        if (sender !== partner) {
+            alertSuccess('New Message From ' + data.sender_name);
+        } else {
+            $('.conversation-start-' + data.sender_id).append('<div class="bubble you">' + data.message + '</div>');
+            const getScrollContainer = document.querySelector('.chat-conversation-box');
+            getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
+
+            in_chat = 1;
+            $.ajax({
+                type: "post",
+                url: '{{route('dashboard.chat.makeMessagesRead')}}',
+                data: {
+                    "_token": "{{csrf_token()}}",
+                    sender,
+                    receiver
+                }
+            })
+        }
+
+        getSortedAdmins(in_chat, receiver);
+
+
+    });
+
+    socket.on('admin_typing', function (data) {
+        $('#' + data).text('typing...');
+        $('#admin_' + data).text('typing...');
+
+    });
+
+    socket.on('admin_stop_type', function (data) {
+        $('.admin_status_typing').empty();
+        $('#' + data).text('');
+        $('#admin_' + data).text('');
+
     })
+
 
 </script>
 

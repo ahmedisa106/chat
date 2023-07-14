@@ -1,11 +1,15 @@
 const express = require('express');
-const {parse} = require("nodemon/lib/cli");
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http,{
+    cors: {
+
+        methods: ["GET", "POST"]
+    }
+});
 var admins = [];
-http.listen(8001, function () {
-    console.log('listening on port 8001');
+http.listen(5000, function () {
+    console.log('listening on port 8002');
 })
 
 io.on('connection', function (socket) {
@@ -14,25 +18,17 @@ io.on('connection', function (socket) {
         io.emit('update_admin_status', admins);
     });
 
-    // socket.on('admin_is_online', function (data) {
-    //     admins[data.id] = socket.id;
-    //     socket.broadcast.emit('admin_is_online', data);
-    // })
-
-
     socket.on('admin_is_typing', function (data) {
-        var partner_id = admins[data.partner_id];
-        io.to(`${admins[data.partner_id]}`).emit('admin_typing', data.admin_id)
+        socket.to(`${admins[data.partner_id]}`).emit('admin_typing', data.admin_id)
     });
 
     socket.on('admin_stop_typing', function (data) {
-        var partner_id = admins[data.partner_id];
-        io.to(`${admins[data.partner_id]}`).emit('admin_stop_typing', data.admin_id)
+        socket.to(`${admins[data.partner_id]}`).emit('admin_stop_type', data.partner_id)
     })
 
 
     socket.on('admin_send_message', function (data) {
-        io.to(`${admins[data.receiver_id]}`).emit('send_message', data)
+        socket.to(`${admins[data.receiver_id]}`).emit('send_message', data)
     })
 
     socket.on('disconnect', function () {
