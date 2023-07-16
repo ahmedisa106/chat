@@ -115,7 +115,7 @@
 
                 },
                 success: function (response) {
-                    $('.conversation-start').append('<div class="bubble me">' + message + '</div>');
+                    $('.active-chat-' + receiver_id).append('<div class="bubble me">' + message + '</div>');
                     const getScrollContainer = document.querySelector('.chat-conversation-box');
                     getScrollContainer.scrollTop = getScrollContainer.scrollHeight;
                     $('.mail-write-box').val('');

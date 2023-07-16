@@ -77,7 +77,7 @@
         if (sender !== partner) {
             alertSuccess('New Message From ' + data.sender_name);
         } else {
-            $('.conversation-start-' + data.sender_id).append('<div class="bubble you">' + data.message + '</div>');
+            $('.active-chat-' + data.sender_id).append('<div class="bubble you">' + data.message + '</div>');
             const getScrollContainer = document.querySelector('.chat-conversation-box');
             getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
 
@@ -111,6 +111,12 @@
 
     })
 
+    $(document).ajaxComplete(function () {
+        socket.emit('admin_connected', {
+            'id': '{{auth('admin')->user()->id}}',
+            'name': '{{auth('admin')->user()->name}}',
+        });
+    })
 
 </script>
 

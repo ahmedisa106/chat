@@ -7,15 +7,17 @@ use App\Models\Admin;
 use App\Models\AdminMessage;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use function Symfony\Component\VarDumper\Dumper\esc;
 
 class ChatController extends Controller
 {
     public function index()
     {
         $admins = Admin::query()->whereNot('admins.id', auth('admin')->id())
-            ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message', 'admin_messages.receiver_id','admin_messages.sender_id')
+            ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message', 'admin_messages.receiver_id', 'admin_messages.sender_id')
             ->leftJoin('admin_messages', function ($q) {
                 $q->on('admins.id', 'admin_messages.sender_id')
                     ->where(function ($q) {
@@ -55,7 +57,7 @@ class ChatController extends Controller
 
 
         $messages = AdminMessage::query()->with('message:id,message')
-            ->where('type', 0)
+            ->where('admin_messages.type', 0)
             ->where(function ($q) use ($partner) {
                 $q->where('sender_id', auth('admin')->id())
                     ->where('receiver_id', $partner->id)
@@ -63,8 +65,18 @@ class ChatController extends Controller
                         $q->where('sender_id', $partner->id)
                             ->where('receiver_id', auth('admin')->id());
                     });
+            })
 
-            })->get();
+            ->leftJoin('messages', 'admin_messages.message_id', '=', 'messages.id')
+            ->select('messages.message', 'admin_messages.id','admin_messages.sender_id','admin_messages.receiver_id','admin_messages.created_at','admin_messages.id','admin_messages.message_id')
+            ->latest('admin_messages.created_at')
+            ->paginate(30)->reverse()->groupBy(function ($q) {
+                return Carbon::parse($q->created_at)->format('d M Y');
+            });
+
+
+
+
         $view = view('dashboard.pages.chat.messages', compact('partner', 'messages'))->render();
         return response()->json($view);
     }

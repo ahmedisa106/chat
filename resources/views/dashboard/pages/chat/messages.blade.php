@@ -1,20 +1,33 @@
-<div class="chat active-chat" data-chat="person6" data-partner_id="{{@$partner->id}}">
-    <input type="hidden" id="partner_id" value="{{$partner->id}}">
-    <div class="conversation-start-{{$partner->id}} conversation-start">
-{{--        <span>Monday, 1:27 PM</span>--}}
+<input type="hidden" id="partner_id" value="{{$partner->id}}">
+<div class="chat active-chat active-chat-{{@$partner->id}}" data-chat="person6" data-partner_id="{{@$partner->id}}">
+    @foreach($messages as $day => $message)
+        <div class="conversation-start-{{$partner->id}} conversation-start">
 
-        @foreach($messages as $message)
+            <span>
 
-            @if($message->sender_id == auth('admin')->id())
+            @if(\Carbon\Carbon::now()->format('d M Y') ==  $day )
+                    today
+                @elseif(\Carbon\Carbon::now()->subDay()->format('d M Y') ==  $day )
+                    yesterday
+                @else
+                {{$day}}
+                @endif
+
+            </span>
+        </div>
+        @foreach($message as $m)
+            @if($m->sender_id == auth('admin')->id())
                 <div class="bubble me">
-                    {{$message->message->message}}
+                    {{$m->message}}
                 </div>
             @else
                 <div class="bubble you">
-                    {{$message->message->message}}
+                    {{$m->message}}
                 </div>
             @endif
         @endforeach
-    </div>
+
+    @endforeach
+
 
 </div>

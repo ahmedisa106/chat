@@ -24,7 +24,7 @@ class AdminTableSeeder extends Seeder
             ],
             [
                 'name' => 'El-Sayed El-Beshry',
-                'email' => 'mohamed@admin.com',
+                'email' => 'saied@admin.com',
                 'password' => bcrypt('admin'),
                 'photo' => 'admins/sayed.jpg',
             ],
