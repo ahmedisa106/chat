@@ -56,7 +56,7 @@ class ChatController extends Controller
         });
 
 
-        $messages = AdminMessage::query()->with('message:id,message')
+        $messages = AdminMessage::query()/*->with('message:id,message')*/
             ->where('admin_messages.type', 0)
             ->where(function ($q) use ($partner) {
                 $q->where('sender_id', auth('admin')->id())
@@ -66,13 +66,13 @@ class ChatController extends Controller
                             ->where('receiver_id', auth('admin')->id());
                     });
             })
-
             ->leftJoin('messages', 'admin_messages.message_id', '=', 'messages.id')
             ->select('messages.message', 'admin_messages.id','admin_messages.sender_id','admin_messages.receiver_id','admin_messages.created_at','admin_messages.id','admin_messages.message_id')
             ->latest('admin_messages.created_at')
             ->paginate(30)->reverse()->groupBy(function ($q) {
                 return Carbon::parse($q->created_at)->format('d M Y');
             });
+
 
 
 

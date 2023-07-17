@@ -88,6 +88,7 @@
     {{-- send message--}}
     <script>
 
+        // var last_date_updated = '';
         $('.chat-form').on('submit', function (e) {
             e.preventDefault();
             var sender_id = '{{auth('admin')->id()}}',
@@ -100,6 +101,8 @@
         });
 
         function sendMessage(sender_id, receiver_id, message) {
+            // var date = $('.active-chat .conversation-start').text();
+            // last_date_updated = date.trim();
             $.ajax({
                 type: "post",
                 url: "{{route('dashboard.chat.sendMessage')}}",
@@ -115,7 +118,20 @@
 
                 },
                 success: function (response) {
-                    $('.active-chat-' + receiver_id).append('<div class="bubble me">' + message + '</div>');
+                    let chat = ``;
+                    // if (last_date_updated === '' || last_date_updated !== 'today') {
+                    //     last_date_updated = 'today';
+                    //     chat += `<div class="conversation-start">
+                    //                     <span>today</span>
+                    //
+                    //             </div>`;
+                    // }
+
+
+                    chat += `<div class="bubble me">${message}</div>`;
+
+
+                    $('.active-chat-' + receiver_id).append(chat);
                     const getScrollContainer = document.querySelector('.chat-conversation-box');
                     getScrollContainer.scrollTop = getScrollContainer.scrollHeight;
                     $('.mail-write-box').val('');

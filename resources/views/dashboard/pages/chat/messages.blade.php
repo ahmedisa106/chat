@@ -3,17 +3,17 @@
     @foreach($messages as $day => $message)
         <div class="conversation-start-{{$partner->id}} conversation-start">
 
-            <span>
+        <span>
 
             @if(\Carbon\Carbon::now()->format('d M Y') ==  $day )
-                    today
-                @elseif(\Carbon\Carbon::now()->subDay()->format('d M Y') ==  $day )
-                    yesterday
-                @else
+                today
+            @elseif(\Carbon\Carbon::now()->subDay()->format('d M Y') ==  $day )
+                yesterday
+            @else
                 {{$day}}
-                @endif
+            @endif
 
-            </span>
+        </span>
         </div>
         @foreach($message as $m)
             @if($m->sender_id == auth('admin')->id())
