@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
+use App\Observers\AdminObserver;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -20,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Admin::observe(AdminObserver::class);
     }
 }

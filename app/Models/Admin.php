@@ -33,5 +33,14 @@ class Admin extends Authenticatable
         return $this->hasMany(AdminMessage::class, 'receiver_id')->where('seen_status', 0);
     }
 
+    public function setPasswordAttribute($password)
+    {
+        if (!is_null($password)) {
+            $this->attributes['password'] = bcrypt($password);
+        } else {
+            $this->attributes['password'] = $password;
+        }
+    }
+
 
 }

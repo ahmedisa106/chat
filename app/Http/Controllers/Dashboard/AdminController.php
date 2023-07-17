@@ -23,7 +23,7 @@ class AdminController extends Controller
     public function data()
     {
         $admins = Admin::query()->select(['id', 'name', 'email', 'status'])->latest('created_at');
-        $data = DataTables::eloquent($admins)
+        return DataTables::eloquent($admins)
             ->addIndexColumn()
             ->addColumn('actions', 'dashboard.partials.actions')
             ->addColumn('status', 'dashboard.pages.admins.status')
@@ -31,19 +31,12 @@ class AdminController extends Controller
             ->skipTotalRecords()
             ->toJson();
 
-        return $data;
 
     }
 
     public function store(AdminRequest $request)
     {
-        $data = $request->safe()->except('photo');
-        $data['password'] = bcrypt($request->password);
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $this->upload($request->photo, 'admins');
-        }
-        Admin::query()->create($data);
-
+        Admin::query()->create($request->safe()->toArray());
         return response()->json('Admin created successfully');
     }
 
@@ -62,7 +55,7 @@ class AdminController extends Controller
         $in_chat = (int)$request->in_chat;
         $partner_id = (int)$request->partner_id;
         $admins = Admin::query()->whereNot('admins.id', auth('admin')->id())
-            ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message', 'admin_messages.receiver_id','admin_messages.sender_id')
+            ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message', 'admin_messages.receiver_id', 'admin_messages.sender_id')
             ->leftJoin('admin_messages', function ($q) {
                 $q->on('admins.id', 'admin_messages.sender_id')
                     ->where(function ($q) {
