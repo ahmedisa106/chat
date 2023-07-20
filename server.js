@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http,{
+const io = require('socket.io')(http, {
     cors: {
 
         methods: ["GET", "POST"]
@@ -35,6 +35,25 @@ io.on('connection', function (socket) {
         var i = admins.indexOf(socket.id);
         admins.splice(i, 1, 0);
         io.emit('update_admin_status', admins);
+    });
+
+    socket.on('i_open_our_chat', function (data) {
+
+        socket.to(`${admins[data.partner_id]}`).emit('i_open_our_chat', {
+            'me': +data.partner_id,
+            'sender': +data.sender,
+        })
+    })
+
+    socket.on('who_partner_you_chat', function (data) {
+        socket.to(`${admins[data.partner_id]}`).emit('who_you_chat', {
+            'partner_id': +data.partner_id,
+            'sender_id': +data.sender_id,
+        })
+    });
+
+    socket.on('i_chat_with', function (data) {
+        socket.to(`${admins[data.sender]}`).emit('i_chat_with', data)
     })
 
 

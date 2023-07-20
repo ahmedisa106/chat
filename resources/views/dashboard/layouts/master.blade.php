@@ -47,6 +47,7 @@
 
 
 <script>
+    var partner_is_in_my_chat = false;
     var partner_id = '';
     const socket = io('http://localhost:5000');
     socket.on('connect', function () {
@@ -58,14 +59,15 @@
 
     });
 
-
     socket.on('update_admin_status', function (admins) {
         $('.admin-status').removeClass('text-success');
         $.each(admins, function (id, value) {
             if (value != null && value !== 0) {
+
                 $('.admin-status-' + id).addClass('text-success');
+                $(`.active-chat-${id} .me span i:not(text-success , fa-check-double)`).addClass('fa-check-double')
             }
-        })
+        });
     });
     socket.on('send_message', function (data) {
         $('.admin_status_typing').empty();
@@ -77,7 +79,9 @@
         if (sender !== partner) {
             alertSuccess('New Message From ' + data.sender_name);
         } else {
-            $('.active-chat-' + data.sender_id).append('<div class="bubble you">' + data.message + '</div>');
+
+            var message = `<div class="bubble you">${data.message}  </br>   <span class=""  style="font-size: 10px;color: black">${moment().format(' hh:mm A')}</span> </div> `
+            $('.active-chat-' + data.sender_id).append(message);
             const getScrollContainer = document.querySelector('.chat-conversation-box');
             getScrollContainer.scrollTo(0, getScrollContainer.scrollHeight);
 
@@ -109,6 +113,34 @@
         $('#' + data).text('');
         $('#admin_' + data).text('');
 
+    });
+
+    socket.on('i_open_our_chat', function (data) {
+        /* $('.admin_status_typing_inside_chat').text('online')*/
+        $(`.active-chat-${data.sender} .me span i`).addClass('text-success fa-check-double')
+    })
+    socket.on('who_you_chat', function (data) {
+
+        let sender = data.sender_id;
+        let partner = data.partner_id;
+        socket.emit('i_chat_with', {
+            partner_id,
+            sender,
+            partner
+
+
+        })
+    })
+
+    socket.on('i_chat_with', function (data) {
+        console.log(data)
+        if (data.partner_id !== '' && data.partner_id == '{{auth('admin')->id()}}') {
+            partner_is_in_my_chat = true;
+            $('.active-chat .me span i').addClass('text-success fa-check-double')
+        } else if (data.partner_id !== '{{auth('admin')->id()}}') {
+            $('.active-chat .me span i:not(text-success , fa-check-double)').addClass('fa-check-double')
+            partner_is_in_my_chat = false;
+        }
     })
 
     $(document).ajaxComplete(function () {

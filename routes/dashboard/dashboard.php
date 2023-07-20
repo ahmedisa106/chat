@@ -19,8 +19,8 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth:admin'], 'as' => '
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
     Route::get('/chat/get-conversation', [ChatController::class, 'getConversation'])->name('chat.getConversation');
     Route::post('chat/send-message', [ChatController::class, 'sendMessage'])->name('chat.sendMessage');
-    Route::post('chat/make-messages-read',[ChatController::class,'makeMessagesRead'])->name('chat.makeMessagesRead');
-
+    Route::post('chat/make-messages-read', [ChatController::class, 'makeMessagesRead'])->name('chat.makeMessagesRead');
+    Route::post('chat/updateDelivery', [ChatController::class, 'updateDelivery'])->name('chat.updateDelivery');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 });

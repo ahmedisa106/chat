@@ -16,6 +16,7 @@
 <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 {{--<script src="{{asset('assets/dashboard')}}/plugins/apex/apexcharts.min.js"></script>--}}
 <script src="{{asset('assets/dashboard')}}/assets/js/dashboard/dash_1.js"></script>
+<script src="{{asset('assets/dashboard/plugins/moment/moment.min.js')}}"></script>
 <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 @include('dashboard.partials.swal')
 @include('dashboard.partials.helper')

@@ -16,6 +16,7 @@ class ChatController extends Controller
 {
     public function index()
     {
+
         $admins = Admin::query()->whereNot('admins.id', auth('admin')->id())
             ->select('admins.id', 'admins.name', 'admins.photo', 'admin_messages.created_at', 'admin_messages.message_id', 'messages.message', 'admin_messages.receiver_id', 'admin_messages.sender_id')
             ->leftJoin('admin_messages', function ($q) {
@@ -49,6 +50,7 @@ class ChatController extends Controller
     public function getConversation(Request $request)
     {
 
+
         $partner = Admin::query()->findOrFail($request->admin_id);
 
         AdminMessage::query()->where([['receiver_id', auth('admin')->id()], ['sender_id', $request->admin_id]])->where('seen_status', 0)->each(function ($q) {
@@ -56,7 +58,7 @@ class ChatController extends Controller
         });
 
 
-        $messages = AdminMessage::query()/*->with('message:id,message')*/
+        $messages = AdminMessage::query()
             ->where('admin_messages.type', 0)
             ->where(function ($q) use ($partner) {
                 $q->where('sender_id', auth('admin')->id())
@@ -67,17 +69,20 @@ class ChatController extends Controller
                     });
             })
             ->leftJoin('messages', 'admin_messages.message_id', '=', 'messages.id')
-            ->select('messages.message', 'admin_messages.id','admin_messages.sender_id','admin_messages.receiver_id','admin_messages.created_at','admin_messages.id','admin_messages.message_id')
+            ->select('messages.message', 'admin_messages.id', 'admin_messages.sender_id', 'admin_messages.receiver_id', 'admin_messages.created_at', 'admin_messages.id', 'admin_messages.message_id', 'admin_messages.seen_status')
             ->latest('admin_messages.created_at')
-            ->paginate(30)->reverse()->groupBy(function ($q) {
+            ->paginate(10)->reverse()->groupBy(function ($q) {
                 return Carbon::parse($q->created_at)->format('d M Y');
             });
 
 
+        if ($request->page > 1) {
+            $view = view('dashboard.pages.chat.only_messages', compact('partner', 'messages'))->render();
+        } else {
+            $view = view('dashboard.pages.chat.messages', compact('partner', 'messages'))->render();
+        }
 
 
-
-        $view = view('dashboard.pages.chat.messages', compact('partner', 'messages'))->render();
         return response()->json($view);
     }
 
@@ -107,5 +112,10 @@ class ChatController extends Controller
             $q->update(['seen_status' => 1]);
         });
 
+    }
+
+    public function updateDelivery(Request $request)
+    {
+        dd($request->all());
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\AuthRequest;
+use App\Models\AdminMessage;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -24,6 +25,7 @@ class AuthController extends Controller
 
         if (auth('admin')->attempt($credentials)) {
             \auth('admin')->user()->update(['status' => 1]);
+            AdminMessage::query()->where('receiver_id', \auth('admin')->id())->where('delivered_status', 0)->update(['delivered_status' => 1]);
             return response()->json(auth('admin')->user());
         } else {
 

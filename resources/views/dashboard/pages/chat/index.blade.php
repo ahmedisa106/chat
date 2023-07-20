@@ -50,13 +50,23 @@
 
     {{-- get conversations when chose the partner--}}
     <script>
+        var page = 1;
+        var current_page = 0;
         $(document).on('click', '.person', function (e) {
+            page = 1;
+            current_page = 0;
             e.preventDefault();
             $('input[name="message"]').val('')
             // $(this).css('background-color', '#417c5624').siblings().css('background-color', '')
             var admin_id = $(this).data('admin_id');
             $('.admin_status_typing_inside_chat').attr('id', admin_id)
             partner_id = admin_id;
+
+
+            socket.emit('i_open_our_chat', {
+                partner_id,
+                'sender': '{{auth('admin')->user()->id}}'
+            })
 
             $.ajax({
                 type: "get",
@@ -128,20 +138,35 @@
                     // }
 
 
-                    chat += `<div class="bubble me">${message}</div>`;
+                    chat += `
+                            <div class="bubble me">
+                             <span>
+                                 <i class="fa fa-check"></i>
+                            </span>
+                                ${message}
+                                </br>
+                                <span class=""  style="font-size: 10px;color: black">${moment().format(' hh:mm A')}</span>
+                           </div>
+                           `;
 
 
-                    $('.active-chat-' + receiver_id).append(chat);
-                    const getScrollContainer = document.querySelector('.chat-conversation-box');
-                    getScrollContainer.scrollTop = getScrollContainer.scrollHeight;
                     $('.mail-write-box').val('');
 
+                    socket.emit('who_partner_you_chat', {
+                        'sender_id': "{{auth('admin')->id()}}",
+                        'partner_id': partner_id
+                    })
                     socket.emit('admin_send_message', {
                         message,
                         sender_id,
                         receiver_id,
                         'sender_name': "{{auth('admin')->user()->name}}"
                     });
+
+                    $('.active-chat-' + receiver_id).append(chat);
+                    const getScrollContainer = document.querySelector('.chat-conversation-box');
+                    getScrollContainer.scrollTop = getScrollContainer.scrollHeight;
+
                     getSortedAdmins(1, receiver_id);
                 },
                 error: function (response) {
@@ -175,6 +200,43 @@
                 partner_id,
             })
         }
+
+    </script>
+    <script>
+
+        //  when window scroll top
+
+        $('.chat-conversation-box').scroll(function () {
+            if ($(this).scrollTop() <= 0 && page !== current_page) {
+                page++;
+                getConversations(page);
+            }
+        });
+
+        function getConversations(page) {
+            var url = '{{route('dashboard.chat.getConversation')}}' + '?page=' + page;
+            $.ajax({
+                type: 'get',
+                url,
+                data: {
+                    'admin_id': partner_id
+                },
+                success: function (response) {
+
+                    if (response !== '') {
+                        const getScrollContainer = document.querySelector('.chat-conversation-box');
+                        getScrollContainer.scrollTop = 20;
+                        $('.active-chat-' + partner_id).prepend(response)
+                    } else {
+                        current_page = page;
+                    }
+
+
+                }
+            })
+
+        }
+
 
     </script>
 

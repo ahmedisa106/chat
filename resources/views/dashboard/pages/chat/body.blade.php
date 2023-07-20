@@ -6,7 +6,7 @@
                 <span class="name"></span>
             </span>
             <div>
-                <span class="d-block admin_status_typing admin_status_typing_inside_chat " id="partner_id"></span>
+                <span class="d-block admin_status_typing admin_status_typing_inside_chat" id="partner_id"></span>
             </div>
         </div>
 
