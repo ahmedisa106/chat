@@ -9,6 +9,7 @@ git clone https://github.com/ahmedisa106/chat.git
 ```
 cd chat\
 ```
+
 ### run composer command to install packages
 
 ```
@@ -31,7 +32,6 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-
 ### configure .env file
 
 ```
@@ -51,13 +51,16 @@ php artisan storage:link
 ```
 php artisan serve
 
-nodemon server.js
+node server.js
 ```
+
 ### go to :
+
 ```
  /dashboard/login
 ```
-### use email  & password to login
+
+### use email & password to login
 
 ```
 email: admin@admin.com
